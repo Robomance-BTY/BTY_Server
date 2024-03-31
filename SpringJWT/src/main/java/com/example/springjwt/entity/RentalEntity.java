@@ -17,6 +17,7 @@ public class RentalEntity {
     private Long userId;
     private Long bookId;
     private Date rentalTime;
+    private Date returnTime;
 
     @Column(name = "rental_state")
     private Boolean rentalState;
