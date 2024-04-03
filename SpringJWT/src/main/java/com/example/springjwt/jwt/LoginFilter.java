@@ -1,6 +1,7 @@
 package com.example.springjwt.jwt;
 
 import com.example.springjwt.dto.CustomUserDetails;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -13,8 +14,11 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import java.io.IOException;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 @Slf4j
 // API 호출에 사용할 수 있는 형식을 위해 상속받아서 리팩토링 시작
@@ -22,6 +26,8 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
 
     private final JWTUtil jwtUtil;
+
+
 
     public LoginFilter(AuthenticationManager authenticationManager, JWTUtil jwtUtil) {
 
@@ -48,7 +54,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
     //로그인 성공시 실행하는 메소드 (여기서 JWT를 발급하면 됨)
 
     @Override
-    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) {
+    protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException {
 
         log.info("success");
         //CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -60,6 +66,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
         String username = customUserDetails.getUsername();
 
+
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();
         GrantedAuthority auth = iterator.next();
@@ -69,6 +76,19 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String token = jwtUtil.createJwt(username, role, 600*600*100L);
 
         response.addHeader("Authorization", "Bearer " + token);
+
+        Map<String, Object> responseBody = new HashMap<>();
+        responseBody.put("userId", customUserDetails.getUserEntity().getId()); // CustomUserDetails에서 UserEntity의 ID를 가져오는 방법을 구현해야 함
+        responseBody.put("message", "로그인에 성공했습니다.");
+
+        // ObjectMapper를 사용하여 Map 객체를 JSON 문자열로 변환
+        String jsonResponseBody = new ObjectMapper().writeValueAsString(responseBody);
+
+        // 응답 본문에 JSON 문자열 설정
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(jsonResponseBody);
+        response.getWriter().flush();
     }
 
     //로그인 실패시 실행하는 메소드

@@ -1,6 +1,6 @@
 package com.example.springjwt.dto;
 
-import com.example.springjwt.entity.UserEntity;
+import com.example.springjwt.entity.AdminEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -10,11 +10,18 @@ import java.util.Collection;
 public class CustomUserDetails implements UserDetails {
 
     // UserEntity를 받아야 함으로, 생성자 초기화를 해준다.
-    private final UserEntity userEntity;
+    private final AdminEntity adminEntity;
 
-    public CustomUserDetails(UserEntity userEntity) {
+    public CustomUserDetails(AdminEntity adminEntity) {
 
-        this.userEntity = userEntity;
+        this.adminEntity = adminEntity;
+    }
+
+    public AdminEntity getUserEntity() {
+        return adminEntity;
+    }
+    public Integer getUserId() {
+        return adminEntity.getId();
     }
 
 
@@ -22,13 +29,13 @@ public class CustomUserDetails implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
 // GrantedAuthority 컬렉션의 List 를 만들어준다.
         Collection<GrantedAuthority> collection = new ArrayList<>();
-// GrantedAuthority 를 이용하여 userEntity 에서 Role 값만 뽑는다.
+// GrantedAuthority 를 이용하여 AdminEntity 에서 Role 값만 뽑는다.
         collection.add(new GrantedAuthority() {
 
             @Override
             public String getAuthority() {
 
-                return userEntity.getRole();
+                return adminEntity.getRole();
             }
         });
 // 컬렉션 리턴
@@ -38,13 +45,13 @@ public class CustomUserDetails implements UserDetails {
     @Override
     public String getPassword() {
 
-        return userEntity.getPassword();
+        return adminEntity.getAdminPassword();
     }
 
     @Override
     public String getUsername() {
 
-        return userEntity.getUsername();
+        return adminEntity.getAdminId();
     }
 
     @Override

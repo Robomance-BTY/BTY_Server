@@ -1,5 +1,6 @@
 package com.example.springjwt.entity;
 
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -10,18 +11,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-public class BookEntity {
+public class AdminEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
 
-    private String title;
-    private String author;
-    private String genre;
-    private String locationInfo;
-
-    // 수정본
-    private String country;
-    private String description;
-    private String publishedDate;
+    private String adminId;
+    private String adminPassword;
+    private String role;
 }

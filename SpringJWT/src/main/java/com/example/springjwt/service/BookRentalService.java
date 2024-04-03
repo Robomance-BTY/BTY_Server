@@ -1,15 +1,19 @@
 package com.example.springjwt.service;
 
 import com.example.springjwt.dto.RentalDTO;
+import com.example.springjwt.entity.BookEntity;
 import com.example.springjwt.entity.RentalEntity;
 import com.example.springjwt.repository.BookRepository;
 import com.example.springjwt.repository.RentalRepository;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+
 import org.modelmapper.ModelMapper;
 
 @Service
@@ -33,23 +37,44 @@ public class BookRentalService {
     }
 
 
-    @Transactional
-    public boolean rentBook(RentalDTO rentalDTO) {
-        // DTO를 Entity로 변환
-        RentalEntity rentalEntity = modelMapper.map(rentalDTO, RentalEntity.class);
-        rentalEntity.setRentalState(true); // 대여 상태를 true로 설정
-        rentalEntity.setRentalTime(new Date()); // 현재 시간을 대여 시간으로 설정
-
-        // 책이 이미 대여 중인지 확인
-        boolean isAlreadyRented = rentalRepository.existsByBookIdAndRentalState(rentalDTO.getBookId(), true);
-        if (isAlreadyRented) {
-            return false;
-        }
-
-        rentalRepository.save(rentalEntity);
-        return true;
+//    @Transactional
+//    public BookEntity rentBook(RentalDTO rentalDTO) {
+//        boolean isAlreadyRented = rentalRepository.existsByBookIdAndRentalState(rentalDTO.getBookId(), true);
+//        if (isAlreadyRented) {
+//            return null; // 이미 대여 중인 경우
+//        }
+//
+//        RentalEntity rentalEntity = modelMapper.map(rentalDTO, RentalEntity.class);
+//        rentalEntity.setRentalState(true);
+//        rentalEntity.setRentalTime(new Date());
+//        rentalRepository.save(rentalEntity);
+//
+//        // 대여 성공 시, 대여한 책의 정보 반환
+//        return bookRepository.findById(rentalDTO.getBookId()).orElse(null);
+//    }
+//
+@Transactional
+public BookEntity rentBook(RentalDTO rentalDTO) {
+    // 책의 존재 여부 확인
+    Optional<BookEntity> bookOptional = bookRepository.findById(rentalDTO.getBookId());
+    if (!bookOptional.isPresent()) {
+        throw new EntityNotFoundException("Book does not exist.");
     }
 
+    // 이미 대여 중인지 확인
+    boolean isAlreadyRented = rentalRepository.existsByBookIdAndRentalState(rentalDTO.getBookId(), true);
+    if (isAlreadyRented) {
+        throw new IllegalStateException("Book is already rented.");
+    }
+
+    RentalEntity rentalEntity = modelMapper.map(rentalDTO, RentalEntity.class);
+    rentalEntity.setRentalState(true);
+    rentalEntity.setRentalTime(new Date());
+    rentalRepository.save(rentalEntity);
+
+    // 대여 성공 시, 대여한 책의 정보 반환
+    return bookOptional.get();
+}
 
     @Transactional
     public boolean returnBook(Long bookId) {

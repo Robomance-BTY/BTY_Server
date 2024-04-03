@@ -28,17 +28,21 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.mysql:mysql-connector-j'
 
-    implementation 'io.springfox:springfox-boot-starter:3.0.0'
+// ModelMapper
     implementation 'org.modelmapper:modelmapper:2.4.4'
 
+// Swagger
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.4'
 
-
+//JWT
     implementation 'io.jsonwebtoken:jjwt-api:0.12.3'
     implementation 'io.jsonwebtoken:jjwt-impl:0.12.3'
     implementation 'io.jsonwebtoken:jjwt-jackson:0.12.3'
 
-
-
+//
+//// MQTT
+//    implementation 'org.springframework.boot:spring-boot-starter-integration'
+//    implementation 'org.springframework.integration:spring-integration-mqtt'
 
 
     annotationProcessor 'org.projectlombok:lombok'

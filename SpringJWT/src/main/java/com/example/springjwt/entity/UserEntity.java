@@ -1,22 +1,40 @@
 package com.example.springjwt.entity;
 
+import jakarta.persistence.*;
+import lombok.*;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.Getter;
-import lombok.Setter;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private Long id;
 
-    private String username;
-    private String password;
-    private String role;
+    @Column(unique = true)
+    private String loginCode;
+
+    @Column
+    private Boolean loginState;
+
+
+    @Column(nullable = true, updatable = true)
+    private LocalDate loginTime;
+
+
+    public long getUsedTimeInSeconds() {
+        if (this.loginTime == null) {
+            return 0;
+        }
+        return Duration.between(this.loginTime, LocalDateTime.now()).getSeconds();
+    }
+
+
 }

@@ -1,8 +1,8 @@
 package com.example.springjwt.service;
 
 import com.example.springjwt.dto.CustomUserDetails;
-import com.example.springjwt.entity.UserEntity;
-import com.example.springjwt.repository.UserRepository;
+import com.example.springjwt.entity.AdminEntity;
+import com.example.springjwt.repository.AdminLoginRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -11,18 +11,19 @@ import org.springframework.stereotype.Service;
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 
-    private final UserRepository userRepository;
+    private final AdminLoginRepository adminLoginRepository;
     //DB에서 조회를 해야하기 때문에, 생성자 주입을 해여한다.
-    public CustomUserDetailsService(UserRepository userRepository) {
+    public CustomUserDetailsService(AdminLoginRepository adminLoginRepository) {
 
-        this.userRepository = userRepository;
+        this.adminLoginRepository = adminLoginRepository;
+
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         //DB에서 조회를 해야하기 때문에,
-        UserEntity userData = userRepository.findByUsername(username);
+        AdminEntity userData = adminLoginRepository.findByAdminId(username);
 
         if (userData != null) {
 

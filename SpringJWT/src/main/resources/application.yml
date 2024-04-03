@@ -22,19 +22,26 @@ spring:
       ddl-auto: update
 
   springdoc:
-    swagger-ui:
-      path: /swagger-ui.html
-      groups-order: DESC
-      operationsSorter: method
-      disable-swagger-default-url: true
-      display-request-duration: true
+    version: '@project.version@'
     api-docs:
-      path: /api-docs
-    show-actuator: true
+      path: /**
     default-consumes-media-type: application/json
     default-produces-media-type: application/json
+    swagger-ui:
+      operations-sorter: alpha
+      tags-sorter: alpha
+      path: /swagger-ui.html
+      disable-swagger-default-url: true
+      display-query-params-without-oauth2: true
+      doc-expansion: none
     paths-to-match:
-      - /v1/**
+      - /**
+
 
   jwt:
     secret: tkachsdlfmadmswjdwlscjfwlrdjqdmsvotuselwkdlsj
+
+#  mqtt:
+#    broker:
+#        host: 2.0.18
+#        port: 1883

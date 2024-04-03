@@ -2,20 +2,20 @@ package com.example.springjwt.service;
 
 
 import com.example.springjwt.dto.JoinDTO;
-import com.example.springjwt.entity.UserEntity;
-import com.example.springjwt.repository.UserRepository;
+import com.example.springjwt.entity.AdminEntity;
+import com.example.springjwt.repository.AdminLoginRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class JoinService {
 
-    private final UserRepository userRepository;
+    private final AdminLoginRepository adminLoginRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public JoinService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public JoinService(AdminLoginRepository adminLoginRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
 
-        this.userRepository = userRepository;
+        this.adminLoginRepository = adminLoginRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
@@ -25,22 +25,22 @@ public class JoinService {
         String username = joinDTO.getUsername();
         String password = joinDTO.getPassword();
 
-        Boolean isExist = userRepository.existsByUsername(username);
+        Boolean isExist = adminLoginRepository.existsByAdminId(username);
 
         if (isExist) {
 
             return;
         }
 
-        UserEntity data = new UserEntity();
+        AdminEntity data = new AdminEntity();
 
-        data.setUsername(username);
-        data.setPassword(bCryptPasswordEncoder.encode(password));
+        data.setAdminId(username);
+        data.setAdminPassword(bCryptPasswordEncoder.encode(password));
         // 비밀번호를 생성시 bCryptPasswordEncoder 이용하여 암호를 해쉬화 해야한다.
-        data.setRole("ROLE_USER");
+        data.setRole("ROLE_ADMIN");
         // 스프링은 Role 권한을 줄때 앞에 ROLE_ 이라는 접두사를 붙이고 그 뒤에 역할을 써주면 된다.
 
-        userRepository.save(data);
+        adminLoginRepository.save(data);
     }
 
 

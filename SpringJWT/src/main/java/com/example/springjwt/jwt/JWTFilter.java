@@ -1,7 +1,7 @@
 package com.example.springjwt.jwt;
 
 import com.example.springjwt.dto.CustomUserDetails;
-import com.example.springjwt.entity.UserEntity;
+import com.example.springjwt.entity.AdminEntity;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -57,13 +57,13 @@ public class JWTFilter extends OncePerRequestFilter {
         String role = jwtUtil.getRole(token);
 
         //userEntity를 생성하여 값 set
-        UserEntity userEntity = new UserEntity();
-        userEntity.setUsername(username);
-        userEntity.setPassword("temppassword");
-        userEntity.setRole(role);
+        AdminEntity adminEntity = new AdminEntity();
+        adminEntity.setAdminId(username);
+        adminEntity.setAdminPassword("temppassword");
+        adminEntity.setRole(role);
 
         //UserDetails에 회원 정보 객체 담기
-        CustomUserDetails customUserDetails = new CustomUserDetails(userEntity);
+        CustomUserDetails customUserDetails = new CustomUserDetails(adminEntity);
 
         //스프링 시큐리티 인증 토큰 생성
         Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
