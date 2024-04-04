@@ -40,9 +40,9 @@ public class SecurityConfig {
 
     //AuthenticationManager Bean 등록
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
 
-        return configuration.getAuthenticationManager();
+        return authenticationConfiguration.getAuthenticationManager();
     }
 
     // 시큐리티를 통해 비밀번호를 해쉬화 하여 데이터 교환에 사용해야 함으로 사용.
@@ -60,9 +60,9 @@ public class SecurityConfig {
                 .formLogin((auth) -> auth.disable())
                 .httpBasic((auth) -> auth.disable())
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/login", "/", "/join", "/api/**","/application/").permitAll()
+                        .requestMatchers("/login", "/", "/join", "/api/**", "/application/**").permitAll()
                         .requestMatchers("/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll()
-                        .requestMatchers("main").hasRole("ADMIN")
+                        .requestMatchers("/admin/main").hasRole("ADMIN")
 
                         // 테스트를 위해 모든 경로 허용
 //                        .requestMatchers("/**").permitAll()
@@ -76,4 +76,6 @@ public class SecurityConfig {
 
         return http.build();
     }
+
+    //로그인 경로 변경을 위해 loginFilter 객체를 사용
 }
