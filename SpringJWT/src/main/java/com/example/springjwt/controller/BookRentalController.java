@@ -8,6 +8,7 @@ import com.example.springjwt.entity.RentalEntity;
 import com.example.springjwt.service.ApplicationLoginService;
 import com.example.springjwt.service.BookRentalService;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.action.internal.EntityActionVetoException;
 import org.springframework.http.HttpStatus;
@@ -24,9 +25,11 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 
+@CrossOrigin
+@Tag(name = "책 관리", description = "책 대여,예약,반납 API")
 @Slf4j
 @RestController
-@RequestMapping("application/api")
+@RequestMapping("/application/api")
 public class BookRentalController {
     private final BookRentalService bookRentalService;
 
