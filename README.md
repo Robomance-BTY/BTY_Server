@@ -28,3 +28,14 @@ login시 로그인 시작시간 기록
 각 파트에 걸맞는 return값 구현
 Swagger 재연동
 다음: Swagger 정리 및 각종 예외처리 테스트
+
+4/11일
+
+Notion에 api 명세서 업데이트
+logout로직 구현
+
+
+
+![image](https://github.com/Robomance-BTY/BTY_Server/assets/118197691/06626b92-7d25-4e6b-a190-2526fb5682cc)
+
+
