@@ -47,3 +47,12 @@ Notion에 api 명세서 업데이트
 3. Admin을 위한 전체테이블 정보, 현재 사용중인 테이블 이용시간 및 요금 조회 기능
 4. Admin을 위한 상품 주문내역, 책 대여내역, 책 예약내역 구현
 
+5월 13일
+1. testMethodForReserve 예약에 필요한 메소드 만들기(bookId)
+    1. rental_state중 파라미터로 넘어온 bookId중 rental_state가 1이 있으면 Boolean리턴)
+2. cancelReserve 반납에 필요한 메소드 만들기(bookId)
+    1. rental_state중 파라미터로 넘어온 bookId중 rental_state가 1이 있으면 Boolean리턴
+    2. reservation중 bookId에 맞는 가장 처음 빌린 컬럼 자체 리턴
+3. cancelReserve 예약취소 만들기(userid)
+      
+
