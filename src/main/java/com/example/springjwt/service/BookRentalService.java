@@ -1,5 +1,7 @@
 package com.example.springjwt.service;
 
+import com.example.springjwt.dto.BookDTO;
+import com.example.springjwt.dto.RentalAndReservationInfoDto;
 import com.example.springjwt.dto.RentalDTO;
 import com.example.springjwt.dto.ResponseDTO;
 import com.example.springjwt.entity.BookEntity;
@@ -157,4 +159,27 @@ public class BookRentalService {
     public List<RentalEntity> getUnreturnedRentalsByUserId(Long userId){
         return rentalRepository.findByUserIdAndRentalStateTrue(userId);
     }
-}
+
+    public Boolean testMethod(RentalDTO rentalDTO){
+        return rentalRepository.existsByBookIdAndRentalState(rentalDTO.getBookId(), true);
+    }
+
+        public RentalAndReservationInfoDto getRentalStatusAndFirstReservation(Long bookId) {
+            boolean isRented = rentalRepository.existsByBookIdAndRentalState(bookId, true);
+            ReservationEntity firstReservation = reservationRepository.findByBookIdOrderByReservationTimeAsc(bookId)
+                    .stream()
+                    .findFirst()
+                    .orElse(null);
+
+            return new RentalAndReservationInfoDto(isRented, firstReservation);
+        }
+
+    @Transactional
+    public List<ReservationEntity> cancelAllReservationsByUserId(Long userId) {
+        List<ReservationEntity> reservations = reservationRepository.findByUserId(userId);
+        reservationRepository.deleteByUserId(userId);
+        return reservations; // 삭제 전 조회한 예약 정보를 반환
+    }
+    }
+
+

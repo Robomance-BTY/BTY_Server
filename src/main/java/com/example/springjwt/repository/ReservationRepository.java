@@ -14,5 +14,7 @@ public interface ReservationRepository extends JpaRepository<ReservationEntity, 
     @Transactional
     void deleteByUserId(Long id);
 
+    List<ReservationEntity> findByUserId(Long userId);
+
     boolean existsByUserId(Long id);
 }

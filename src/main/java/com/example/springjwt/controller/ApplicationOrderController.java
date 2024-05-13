@@ -26,5 +26,4 @@ public class ApplicationOrderController {
         return orderService.createOrder(orderDTO.getUserId(), orderDTO.getProductId());
     }
 
-
 }
