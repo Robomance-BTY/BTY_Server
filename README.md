@@ -56,3 +56,6 @@ Notion에 api 명세서 업데이트
 3. cancelReserve 예약취소 만들기(userid)
       
 
+5월 24일
+IOS와 책의 대여 및 예약 및 반납에 관한 모든 api 테스트 완료
+기존의 api에서 리턴타입을 약간 수정
