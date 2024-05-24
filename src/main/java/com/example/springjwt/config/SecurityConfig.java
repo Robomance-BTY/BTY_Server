@@ -66,7 +66,7 @@ public class SecurityConfig {
                 .httpBasic((auth) -> auth.disable())
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/login", "/admin/join", "/join", "/api/**", "/application/**").permitAll()
-                        .requestMatchers("/swagger-ui.html","/chat","/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**","/ws/**","/ws").permitAll()
+                        .requestMatchers("/test","/swagger-ui.html","/chat","/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**","/ws/**","/ws").permitAll()
 
                         .requestMatchers("/admin/**").hasRole("ADMIN")
 

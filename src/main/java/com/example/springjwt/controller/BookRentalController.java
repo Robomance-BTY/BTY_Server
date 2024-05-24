@@ -19,9 +19,12 @@ import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.print.Book;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -102,6 +105,7 @@ public class BookRentalController {
 
 
 
+
     @Operation(
             summary = "도서 반납",
             description = "특정 사용자가 도서를 반납하는 API입니다. Authorization 헤더에 토큰 값을 포함해야 합니다.",
@@ -136,11 +140,21 @@ public class BookRentalController {
 
         if (response.getStatus().equals("성공")) {
             messageService.sendLocationInfoToSubscribers(response.getLocationInfo());
-            return ResponseEntity.ok().body(response.getMessage() + "userId: " + response.getUserId() +"location_info:" + response.getLocationInfo());
+            // Map을 사용하여 응답 바디 구성
+            Map<String, Object> responseBody = new HashMap<>();
+            responseBody.put("message", response.getMessage());
+            responseBody.put("userId", response.getUserId());
+
+            return ResponseEntity.ok().body(responseBody);
         } else {
-            return ResponseEntity.badRequest().body(response.getMessage());
+            // 실패한 경우도 메시지만 전달
+            Map<String, String> errorBody = new HashMap<>();
+            errorBody.put("message", response.getMessage());
+            return ResponseEntity.badRequest().body(errorBody);
         }
     }
+
+
 
     @Operation(
             summary = "미반납 도서 목록 조회",
@@ -177,6 +191,17 @@ public class BookRentalController {
     @PostMapping("/cancelReserve")
     public List<ReservationEntity> cancelReservations(@RequestBody RentalDTO rentalDTO) {
         return bookRentalService.cancelAllReservationsByUserId(rentalDTO.getUserId());
+    }
+
+    @PostMapping("users-by-book")
+    public Map<String, Long> getUserIdByBookId(@RequestBody RentalDTO rentalDTO) {
+        List<Long> userIds = bookRentalService.getUserIdsByBookId(rentalDTO.getBookId());
+        Map<String, Long> response = new HashMap<>();
+
+        if (!userIds.isEmpty()) {
+            response.put("userId", userIds.get(0));  // 첫 번째 사용자 ID를 반환
+        }
+        return response;
     }
     }
 
