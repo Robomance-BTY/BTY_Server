@@ -66,7 +66,7 @@ public class BookRentalController {
             responseCode = "403",
             description = "Book is already rented or does not exist."
     )
-
+//
 //    @PostMapping("/rentOrReserve")
 //    public ResponseEntity<?> rentOrReserveBook(@RequestBody RentalDTO rentalDTO) {
 //        try {
@@ -89,10 +89,10 @@ public class BookRentalController {
             ResponseDTO response = bookRentalService.rentOrReserveBook(rentalDTO);
             if (response.getStatus().equals("대여됨")) {
                 log.info("locationInfo = {}",response.getLocationInfo());
-                messageService.sendLocationInfoToSubscribers(response.getLocationInfo());
+                messageService.sendLocationInfoToSubscribers(response.getLocationInfo(),rentalDTO.getUserId());
                 return ResponseEntity.ok().body(Map.of("message", "책이 성공적으로 대여되었습니다.", "locationInfo", response.getLocationInfo()));
             } else if (response.getStatus().equals("예약됨")) {
-                messageService.sendLocationInfoToSubscribers(response.getLocationInfo());
+                messageService.sendLocationInfoToSubscribers(response.getLocationInfo(),rentalDTO.getUserId());
                 return ResponseEntity.ok().body(Map.of("message", "책이 이미 대여 중이므로 예약되었습니다. "+response.getMessage(), "locationInfo", response.getLocationInfo()));
             } else {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("처리 중 알 수 없는 오류가 발생했습니다.");
@@ -113,39 +113,24 @@ public class BookRentalController {
                     @Parameter(name = "Authorization", required = true, description = "Bearer [Token]", schema = @Schema(type = "string"))
             }
     )
-//    @PostMapping("/return")
-//    public ResponseEntity<?> returnBook(@RequestBody RentalDTO rentRequestDto) {
-//        // RentalDTO에서 bookId 추출
-//        Long bookId = rentRequestDto.getBookId();
-//        log.info("bookId = {}", bookId);
-//
-//        // 서비스에서 책 반납 처리 후 결과 받기
-//        ResponseDTO response = bookRentalService.returnBook(bookId);
-//
-//        // 반환된 ResponseDTO의 상태에 따라 응답 분기 처리
-//        if (response.getStatus().equals("성공")) {
-//            // 반납 성공 혹은 예약된 사용자에게 대여 성공 시
-//            return ResponseEntity.ok().body(response.getMessage() + "userId: " + response.getUserId() +"location_info:" + response.getLocationInfo());
-//        } else {
-//            // 반납 실패 시 (책이 대여 중이지 않거나, 존재하지 않는 경우)
-//            return ResponseEntity.badRequest().body(response.getMessage());
-//        }
-//    }
     @PostMapping("/return")
     public ResponseEntity<?> returnBook(@RequestBody RentalDTO rentRequestDto) {
         Long bookId = rentRequestDto.getBookId();
-        log.info("bookId = {}", bookId);
+        Long userId = rentRequestDto.getUserId(); // userId를 함께 받음
+        log.info("bookId = {}, userId = {}", bookId, userId);
 
-        ResponseDTO response = bookRentalService.returnBook(bookId);
+        ResponseDTO response = bookRentalService.returnBook(bookId, userId);
 
         if (response.getStatus().equals("성공")) {
-            messageService.sendLocationInfoToSubscribers(response.getLocationInfo());
+            // sendLocationInfoToSubscribers 메서드 호출 시 userId도 전달
+            messageService.sendLocationInfoToSubscribers(response.getLocationInfo(), response.getUserId());
             // Map을 사용하여 응답 바디 구성
             Map<String, Object> responseBody = new HashMap<>();
             responseBody.put("message", response.getMessage());
             responseBody.put("userId", response.getUserId());
 
             return ResponseEntity.ok().body(responseBody);
+
         } else {
             // 실패한 경우도 메시지만 전달
             Map<String, String> errorBody = new HashMap<>();
@@ -154,7 +139,38 @@ public class BookRentalController {
         }
     }
 
-
+//
+//    @PostMapping("/return")
+//    public ResponseEntity<?> returnBook(@RequestBody RentalDTO rentRequestDto) {
+//        Long bookId = rentRequestDto.getBookId();
+//        Long userId = rentRequestDto.getUserId(); // userId를 함께 받음
+//        log.info("bookId = {}, userId = {}", bookId, userId);
+//
+//        ResponseDTO response = bookRentalService.returnBook(bookId, userId);
+//
+//        if (response.getStatus().equals("성공")) {
+//            if (response.getMessage().contains("예약된 사용자에게")) {
+//                // 예약된 사용자에게 대여된 경우
+//                messageService.sendLocationInfoToSubscribers(response.getLocationInfo(), response.getUserId());
+//            } else {
+//                // 반납만 된 경우
+//                messageService.sendLocationInfoToSubscribers(null, response.getUserId());
+//            }
+//
+//            // Map을 사용하여 응답 바디 구성
+//            Map<String, Object> responseBody = new HashMap<>();
+//            responseBody.put("message", response.getMessage());
+//            responseBody.put("userId", response.getUserId());
+//
+//            return ResponseEntity.ok().body(responseBody);
+//        } else {
+//            // 실패한 경우도 메시지만 전달
+//            Map<String, String> errorBody = new HashMap<>();
+//            errorBody.put("message", response.getMessage());
+//            return ResponseEntity.badRequest().body(errorBody);
+//        }
+//    }
+//
 
     @Operation(
             summary = "미반납 도서 목록 조회",

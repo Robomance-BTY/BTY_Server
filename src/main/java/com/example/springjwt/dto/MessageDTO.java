@@ -24,4 +24,5 @@ public class MessageDTO {
     public void closeConnect() {
         this.type = "close";
     }
+
 }

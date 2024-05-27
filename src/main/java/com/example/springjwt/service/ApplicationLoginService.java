@@ -125,7 +125,7 @@ public class ApplicationLoginService {
             List<RentalEntity> rentals = rentalRepository.findByUserIdAndRentalState(userDTO.getId(), true);
             for (RentalEntity rental : rentals) {
                 // 각 책에 대해 반납 로직을 실행합니다.
-                ResponseDTO returnResponse = bookRentalService.returnBook(rental.getBookId());
+                ResponseDTO returnResponse = bookRentalService.returnBook(rental.getBookId(),rental.getUserId());
                 if (!returnResponse.getStatus().equals("성공")) {
                     // 반납 과정에서 실패한 경우, 로그 기록 또는 추가 처리를 할 수 있습니다.
                     log.warn("Failed to return book during logout. Book ID: {}", rental.getBookId());

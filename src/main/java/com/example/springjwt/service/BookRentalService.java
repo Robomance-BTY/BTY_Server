@@ -136,8 +136,46 @@ public class BookRentalService {
 //            return new ResponseDTO("성공", bookEntity.getLocationInfo(), "책이 성공적으로 반납되었습니다.",bookEntity.getId());
 //        }
 //    }
+//@Transactional
+//public ResponseDTO returnBook(Long bookId) {
+//    List<RentalEntity> rentals = rentalRepository.findByBookId(bookId);
+//
+//    RentalEntity rentalToReturn = rentals.stream()
+//            .filter(RentalEntity::getRentalState)
+//            .findFirst()
+//            .orElse(null);
+//
+//    if (rentalToReturn == null) {
+//        return new ResponseDTO("실패", null, "존재하지 않거나 이미 반납된 책입니다.",null);
+//    }
+//
+//    rentalToReturn.setRentalState(false);
+//    rentalToReturn.setReturnTime(new Date());
+//    rentalRepository.save(rentalToReturn);
+//
+//    // 책 반환 후 예약이 있는지 확인
+//    List<ReservationEntity> reservations = reservationRepository.findByBookIdOrderByReservationTimeAsc(bookId);
+//    if (!reservations.isEmpty()) {
+//        // 예약이 있다면, 가장 먼저 예약한 사용자에게 책을 대여하고 예약을 삭제
+//        ReservationEntity firstReservation = reservations.get(0);
+//        RentalEntity newRental = new RentalEntity();
+//        newRental.setUserId(firstReservation.getUserId());
+//        newRental.setBookId(bookId);
+//        newRental.setRentalState(true);
+//        newRental.setRentalTime(new Date());
+//        rentalRepository.save(newRental);
+//
+//        reservationRepository.delete(firstReservation);
+//
+//        BookEntity bookEntity = bookRepository.findById(bookId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 책입니다."));
+//        return new ResponseDTO("성공", bookEntity.getLocationInfo(), "책이 예약된 사용자에게 성공적으로 대여되었습니다.",bookEntity.getId());
+//    } else {
+//        BookEntity bookEntity = bookRepository.findById(bookId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 책입니다."));
+//        return new ResponseDTO("성공", bookEntity.getLocationInfo(), "책이 성공적으로 반납되었습니다.",bookEntity.getId());
+//    }
+//}
 @Transactional
-public ResponseDTO returnBook(Long bookId) {
+public ResponseDTO returnBook(Long bookId, Long userId) {
     List<RentalEntity> rentals = rentalRepository.findByBookId(bookId);
 
     RentalEntity rentalToReturn = rentals.stream()
@@ -146,7 +184,7 @@ public ResponseDTO returnBook(Long bookId) {
             .orElse(null);
 
     if (rentalToReturn == null) {
-        return new ResponseDTO("실패", null, "존재하지 않거나 이미 반납된 책입니다.",null);
+        return new ResponseDTO("실패", null, "존재하지 않거나 이미 반납된 책입니다.", null);
     }
 
     rentalToReturn.setRentalState(false);
@@ -168,12 +206,13 @@ public ResponseDTO returnBook(Long bookId) {
         reservationRepository.delete(firstReservation);
 
         BookEntity bookEntity = bookRepository.findById(bookId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 책입니다."));
-        return new ResponseDTO("성공", bookEntity.getLocationInfo(), "책이 예약된 사용자에게 성공적으로 대여되었습니다.",bookEntity.getId());
+        return new ResponseDTO("성공", bookEntity.getLocationInfo(), "책이 예약된 사용자에게 성공적으로 대여되었습니다.", firstReservation.getUserId());
     } else {
         BookEntity bookEntity = bookRepository.findById(bookId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 책입니다."));
-        return new ResponseDTO("성공", bookEntity.getLocationInfo(), "책이 성공적으로 반납되었습니다.",bookEntity.getId());
+        return new ResponseDTO("성공", bookEntity.getLocationInfo(), "책이 성공적으로 반납되었습니다.", userId);
     }
 }
+
 //    @Transactional
 //    public boolean returnBook(Long bookId) {
 //        List<RentalEntity> rentals = rentalRepository.findByBookId(bookId);
@@ -231,6 +270,7 @@ public ResponseDTO returnBook(Long bookId) {
 public List<Long> getUserIdsByBookId(Long bookId) {
     return rentalRepository.findUserIdsByBookIdAndRentalStateTrue(bookId);
 }
+
 }
 
 
