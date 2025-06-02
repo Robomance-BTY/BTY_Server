@@ -11,34 +11,6 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.Map;
 
-//@Slf4j
-//@Service
-//public class MessageService {
-//
-//    private final SimpMessageSendingOperations simpMessageSendingOperations;
-//
-//    public MessageService(SimpMessageSendingOperations simpMessageSendingOperations) {
-//        this.simpMessageSendingOperations = simpMessageSendingOperations;
-//    }
-//
-//
-//    public void sendLocationInfoToSubscribers(String locationInfo, Long userId) {
-//        Map<String, Object> messageData = new HashMap<>();
-//        messageData.put("userId", userId);
-//
-//        if (locationInfo != null) {
-//            messageData.put("locationInfo", locationInfo);
-//        } else {
-//            messageData.put("message", "It has been returned.");
-//        }
-//
-//        simpMessageSendingOperations.convertAndSend("/sub/channel/bookinfo", messageData);
-//    }
-//
-//
-//
-//
-// }
 
 @Slf4j
 @Service
@@ -56,18 +28,6 @@ public class MessageService {
         this.simpMessageSendingOperations = simpMessageSendingOperations;
     }
 
-//    public void sendLocationInfoToSubscribers(String locationInfo, Long userId) {
-//        Map<String, Object> messageData = new HashMap<>();
-//        messageData.put("userId", userId);
-//
-//        if (locationInfo != null) {
-//            messageData.put("locationInfo", locationInfo);
-//        } else {
-//            messageData.put("message", "It has been returned.");
-//        }
-//
-//        simpMessageSendingOperations.convertAndSend("/sub/channel/bookinfo", messageData);
-//    }
 
     public void rent(String locationInfo, Long userId, Long bookId, String assignedRegion) {
         messageData.put("bookLocation", locationInfo);
@@ -120,12 +80,3 @@ public class MessageService {
     }
 }
 
-
-
-//// 결과 출력 (테스트 목적)
-//        if (assignedRegion != null) {
-//        System.out.println("Assigned Region: " + assignedRegion);
-//        } else {
-//                System.out.println("No region was assigned.");
-//        }
-//                }

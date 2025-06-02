@@ -63,57 +63,6 @@ public class ApplicationLoginService {
         }
     }
 
-//    @Transactional
-//    public UserDTO logout(UserDTO userDTO) {
-//        Optional<UserEntity> byId = userRepository.findById(userDTO.getId());
-//        if (byId.isPresent()) {
-//            UserEntity userEntity = byId.get();
-//
-//            // 사용자가 빌린 모든 책의 ID를 찾습니다.
-//            List<RentalEntity> rentals = rentalRepository.findByUserIdAndRentalState(userDTO.getId(), true);
-//            for (RentalEntity rental : rentals) {
-//                // 각 책에 대해 반납 로직을 실행합니다.
-//                ResponseDTO returnResponse = bookRentalService.returnBook(rental.getBookId());
-//                if (!returnResponse.getStatus().equals("성공")) {
-//                    // 반납 과정에서 실패한 경우, 로그 기록 또는 추가 처리를 할 수 있습니다.
-//                    log.warn("Failed to return book during logout. Book ID: {}", rental.getBookId());
-//                }
-//            }
-//
-//
-//
-//            // 해당 사용자의 예약 정보가 있는지 확인 후 삭제
-//            if (reservationRepository.existsByUserId(userDTO.getId())) {
-//                reservationRepository.deleteByUserId(userDTO.getId());
-//            }
-//
-//            // 해당 사용자의 대여 정보가 있는지 확인 후 삭제
-//             if (rentalRepository.existsByUserId(userDTO.getId())) {
-//                 rentalRepository.deleteByUserId(userDTO.getId());
-//             }
-//
-//            userEntity.setLoginState(Boolean.FALSE);
-//
-//
-//            long usedTime = getUsedTimeInSeconds(userDTO.getId());
-//            if (usedTime > 0) {
-//                // 사용 시간이 0보다 크면 로그로 기록하거나 다른 처리를 할 수 있습니다.
-//                log.info("User ID: {}, Used Time: {} seconds", userDTO.getId(), usedTime);
-//            } else {
-//                // 사용 시간을 가져오는 데 실패했을 경우의 처리
-//                log.info("Failed to get used time for User ID: {}", userDTO.getId());
-//            }
-//
-////            userEntity.setLoginTime(null);
-//            userRepository.save(userEntity);
-//
-//            return UserDTO.toDTO(userEntity);
-//        } else {
-//            // 해당 ID의 사용자가 없을 경우
-//            return null;
-//        }
-//    }
-
 
     @Transactional
     public UserDTO logout(UserDTO userDTO) {
@@ -165,10 +114,7 @@ public class ApplicationLoginService {
 
 
 
-//    public long getUsedTimeInSeconds(Long id) {
-//            Optional<UserEntity> user = userRepository.findById(id);
-//            return user.map(UserEntity::getUsedTimeInSeconds).orElse(0L);
-//        }
+
 
 
 

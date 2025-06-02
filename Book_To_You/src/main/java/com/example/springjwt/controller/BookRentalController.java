@@ -66,23 +66,7 @@ public class BookRentalController {
             responseCode = "403",
             description = "Book is already rented or does not exist."
     )
-//
-//    @PostMapping("/rentOrReserve")
-//    public ResponseEntity<?> rentOrReserveBook(@RequestBody RentalDTO rentalDTO) {
-//        try {
-//            ResponseDTO response = bookRentalService.rentOrReserveBook(rentalDTO);
-//            if (response.getStatus().equals("대여됨")) {
-//                return ResponseEntity.ok().body(Map.of("message", "책이 성공적으로 대여되었습니다.", "locationInfo", response.getLocationInfo()));
-//            } else if (response.getStatus().equals("예약됨")) {
-//                return ResponseEntity.ok().body(Map.of("message", "책이 이미 대여 중이므로 예약되었습니다. "+response.getMessage(), "locationInfo", response.getLocationInfo()));
-//            } else {
-//                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("처리 중 알 수 없는 오류가 발생했습니다.");
-//            }
-//        } catch (Exception e) {
-//            log.error("Book rental or reservation failed", e);
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("책 대여 또는 예약 실패");
-//        }
-//    }
+
     @PostMapping("/rentOrReserve")
     public ResponseEntity<?> rentOrReserveBook(@RequestBody RentalDTO rentalDTO) {
         try {
@@ -142,39 +126,6 @@ public class BookRentalController {
             return ResponseEntity.badRequest().body(errorBody);
         }
     }
-
-//
-//    @PostMapping("/return")
-//    public ResponseEntity<?> returnBook(@RequestBody RentalDTO rentRequestDto) {
-//        Long bookId = rentRequestDto.getBookId();
-//        Long userId = rentRequestDto.getUserId(); // userId를 함께 받음
-//        log.info("bookId = {}, userId = {}", bookId, userId);
-//
-//        ResponseDTO response = bookRentalService.returnBook(bookId, userId);
-//
-//        if (response.getStatus().equals("성공")) {
-//            if (response.getMessage().contains("예약된 사용자에게")) {
-//                // 예약된 사용자에게 대여된 경우
-//                messageService.sendLocationInfoToSubscribers(response.getLocationInfo(), response.getUserId());
-//            } else {
-//                // 반납만 된 경우
-//                messageService.sendLocationInfoToSubscribers(null, response.getUserId());
-//            }
-//
-//            // Map을 사용하여 응답 바디 구성
-//            Map<String, Object> responseBody = new HashMap<>();
-//            responseBody.put("message", response.getMessage());
-//            responseBody.put("userId", response.getUserId());
-//
-//            return ResponseEntity.ok().body(responseBody);
-//        } else {
-//            // 실패한 경우도 메시지만 전달
-//            Map<String, String> errorBody = new HashMap<>();
-//            errorBody.put("message", response.getMessage());
-//            return ResponseEntity.badRequest().body(errorBody);
-//        }
-//    }
-//
 
     @Operation(
             summary = "미반납 도서 목록 조회",
